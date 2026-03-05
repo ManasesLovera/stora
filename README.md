@@ -9,7 +9,7 @@ Managed with [**uv**](https://docs.astral.sh/uv/) for fast, reproducible depende
 
 ---
 
-## Current Features
+## Features
 
 - **Multi-tenant architecture** – each business (tenant) has isolated data.
 - **JWT authentication** – register / login endpoints with bcrypt password hashing.
