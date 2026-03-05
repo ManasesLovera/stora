@@ -23,9 +23,17 @@ api_router.include_router(auth_router, prefix="/auth", tags=["Authentication"])
 api_router.include_router(users_router, prefix="/users", tags=["Users"])
 api_router.include_router(plans_router, prefix="/plans", tags=["Plans"])
 api_router.include_router(tenants_router, prefix="/tenants", tags=["Tenants"])
-api_router.include_router(memberships_router, prefix="/memberships", tags=["Memberships"])
-api_router.include_router(invitations_router, prefix="/invitations", tags=["Invitations"])
+api_router.include_router(
+    memberships_router, prefix="/memberships", tags=["Memberships"]
+)
+api_router.include_router(
+    invitations_router, prefix="/invitations", tags=["Invitations"]
+)
 api_router.include_router(products_router, prefix="/products", tags=["Products"])
-api_router.include_router(combo_items_router, prefix="/combo-items", tags=["Combo Items"])
+api_router.include_router(
+    combo_items_router, prefix="/combo-items", tags=["Combo Items"]
+)
 api_router.include_router(orders_router, prefix="/orders", tags=["Orders"])
-api_router.include_router(appointments_router, prefix="/appointments", tags=["Appointments"])
+api_router.include_router(
+    appointments_router, prefix="/appointments", tags=["Appointments"]
+)

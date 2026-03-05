@@ -53,9 +53,7 @@ async def get_current_user(
         raise credentials_exception
 
     # Look up the user by e-mail
-    result = await db.execute(
-        select(User).where(User.email == token_data.email)
-    )
+    result = await db.execute(select(User).where(User.email == token_data.email))
     user = result.scalars().first()
 
     if user is None:

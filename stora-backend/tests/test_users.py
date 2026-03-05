@@ -5,7 +5,7 @@ Tests for the Users CRUD endpoints.
 import pytest
 from httpx import AsyncClient
 
-from tests.test_auth import REGISTER_PAYLOAD, get_auth_header, register_user
+from tests.test_auth import REGISTER_PAYLOAD, get_auth_header
 
 
 @pytest.mark.asyncio

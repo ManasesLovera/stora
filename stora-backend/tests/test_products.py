@@ -59,9 +59,7 @@ async def test_list_products_by_tenant(client: AsyncClient):
     tenant_id = await setup_tenant(client, headers)
     await create_product(client, headers, tenant_id)
 
-    response = await client.get(
-        f"/api/v1/products/tenant/{tenant_id}", headers=headers
-    )
+    response = await client.get(f"/api/v1/products/tenant/{tenant_id}", headers=headers)
     assert response.status_code == 200
     assert len(response.json()) >= 1
 
@@ -105,12 +103,8 @@ async def test_delete_product(client: AsyncClient):
     create_resp = await create_product(client, headers, tenant_id)
     product_id = create_resp.json()["id"]
 
-    del_resp = await client.delete(
-        f"/api/v1/products/{product_id}", headers=headers
-    )
+    del_resp = await client.delete(f"/api/v1/products/{product_id}", headers=headers)
     assert del_resp.status_code == 204
 
-    get_resp = await client.get(
-        f"/api/v1/products/{product_id}", headers=headers
-    )
+    get_resp = await client.get(f"/api/v1/products/{product_id}", headers=headers)
     assert get_resp.status_code == 404

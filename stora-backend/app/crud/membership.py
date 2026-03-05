@@ -13,9 +13,7 @@ from app.schemas.membership import MembershipCreate, MembershipUpdate
 
 async def get_membership(db: AsyncSession, membership_id: UUID) -> Membership | None:
     """Return a single membership by primary key, or ``None``."""
-    result = await db.execute(
-        select(Membership).where(Membership.id == membership_id)
-    )
+    result = await db.execute(select(Membership).where(Membership.id == membership_id))
     return result.scalars().first()
 
 
@@ -40,9 +38,7 @@ async def get_memberships_by_user(
     user_id: UUID,
 ) -> list[Membership]:
     """Return all memberships for a given user."""
-    result = await db.execute(
-        select(Membership).where(Membership.user_id == user_id)
-    )
+    result = await db.execute(select(Membership).where(Membership.user_id == user_id))
     return list(result.scalars().all())
 
 

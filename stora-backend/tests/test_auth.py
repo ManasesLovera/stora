@@ -33,7 +33,9 @@ async def login_user(client: AsyncClient, email: str, password: str):
 async def get_auth_header(client: AsyncClient) -> dict:
     """Register + login and return the Authorization header dict."""
     await register_user(client)
-    resp = await login_user(client, REGISTER_PAYLOAD["email"], REGISTER_PAYLOAD["password"])
+    resp = await login_user(
+        client, REGISTER_PAYLOAD["email"], REGISTER_PAYLOAD["password"]
+    )
     token = resp.json()["access_token"]
     return {"Authorization": f"Bearer {token}"}
 

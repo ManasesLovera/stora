@@ -5,7 +5,7 @@ Tests for the Memberships and Orders CRUD endpoints.
 import pytest
 from httpx import AsyncClient
 
-from tests.test_auth import REGISTER_PAYLOAD, get_auth_header
+from tests.test_auth import get_auth_header
 from tests.test_plans import create_plan
 from tests.test_tenants import create_tenant
 
@@ -165,9 +165,7 @@ async def test_list_orders_by_tenant(client: AsyncClient):
         headers=headers,
     )
 
-    response = await client.get(
-        f"/api/v1/orders/tenant/{tenant_id}", headers=headers
-    )
+    response = await client.get(f"/api/v1/orders/tenant/{tenant_id}", headers=headers)
     assert response.status_code == 200
     assert len(response.json()) >= 1
 

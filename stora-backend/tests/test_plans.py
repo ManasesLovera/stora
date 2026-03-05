@@ -66,9 +66,7 @@ async def test_get_plan_by_id(client: AsyncClient):
 @pytest.mark.asyncio
 async def test_get_plan_not_found(client: AsyncClient):
     """GET /api/v1/plans/{id} with bogus UUID returns 404."""
-    response = await client.get(
-        "/api/v1/plans/00000000-0000-0000-0000-000000000000"
-    )
+    response = await client.get("/api/v1/plans/00000000-0000-0000-0000-000000000000")
     assert response.status_code == 404
 
 

@@ -6,7 +6,7 @@ import pytest
 from httpx import AsyncClient
 
 from tests.test_auth import get_auth_header
-from tests.test_plans import PLAN_PAYLOAD, create_plan
+from tests.test_plans import create_plan
 
 
 async def create_tenant(

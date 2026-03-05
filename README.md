@@ -11,8 +11,11 @@ A multi-tenant backend built with **FastAPI**, **SQLAlchemy** (async), and **Pos
 - **Full CRUD** for all entities: Users, Tenants, Plans, Memberships, Invitations, Products, Combo Items, Orders, Appointments.
 - **Pydantic v2 schemas** for strict request validation and clean responses.
 - **Async everywhere** – async SQLAlchemy engine + asyncpg driver.
+- **Alembic migrations** – auto-run on startup; schema versioning for safe deployments.
 - **Environment switching** – toggle between `local` and `production` via `APP_ENV`.
 - **Dockerised** – Dockerfile for the backend + docker-compose for backend + Postgres.
+- **Test suite** – 45 tests covering auth, CRUD, and health check (pytest + httpx + aiosqlite).
+- **CI pipeline** – GitHub Actions workflow for linting, testing, and Docker build.
 - **Interactive docs** – Swagger UI at `/docs`, ReDoc at `/redoc`.
 
 ---
@@ -21,12 +24,28 @@ A multi-tenant backend built with **FastAPI**, **SQLAlchemy** (async), and **Pos
 
 ```
 stora/
+├── .github/workflows/ci.yml    # GitHub Actions CI pipeline
 ├── docker-compose.yml          # Orchestrates backend + Postgres
 ├── stora-backend/
 │   ├── Dockerfile              # Multi-stage Python image
 │   ├── requirements.txt        # Python dependencies
 │   ├── .env.example            # Environment variable template
+│   ├── alembic.ini             # Alembic configuration
+│   ├── pytest.ini              # Pytest configuration
 │   ├── diagram.md              # ER diagram (Mermaid)
+│   ├── alembic/                # Database migrations
+│   │   ├── env.py              # Async migration runner
+│   │   └── versions/           # Migration scripts
+│   ├── tests/                  # Test suite
+│   │   ├── conftest.py         # Shared fixtures (in-memory SQLite)
+│   │   ├── test_auth.py        # Auth endpoint tests
+│   │   ├── test_health.py      # Health check tests
+│   │   ├── test_users.py       # User CRUD tests
+│   │   ├── test_plans.py       # Plan CRUD tests
+│   │   ├── test_tenants.py     # Tenant CRUD tests
+│   │   ├── test_products.py    # Product CRUD tests
+│   │   ├── test_invitations.py # Invitation CRUD tests
+│   │   └── test_memberships_orders.py  # Membership & Order tests
 │   └── app/
 │       ├── main.py             # FastAPI application entry point
 │       ├── config.py           # Settings loaded from env vars
@@ -202,7 +221,68 @@ All business endpoints live under `/api/v1`. Protected endpoints require a `Bear
 - **Async/await**: all database operations use `AsyncSession`.
 - **UUID primary keys**: every entity uses `uuid4` for IDs.
 - **Environment-based config**: `pydantic-settings` loads from `.env` with sensible defaults.
+- **Alembic migrations**: schema changes are versioned; migrations auto-run on startup.
 - **Well-commented code**: every module, class, function, and column has docstrings/comments.
+
+---
+
+## Database Migrations
+
+Migrations are managed with **Alembic** and run automatically when the application starts.
+
+```bash
+# Generate a new migration after model changes
+cd stora-backend
+alembic revision --autogenerate -m "description_of_change"
+
+# Apply migrations manually
+alembic upgrade head
+
+# Downgrade one revision
+alembic downgrade -1
+```
+
+---
+
+## Testing
+
+The test suite uses **pytest** with **pytest-asyncio** and an **in-memory SQLite** database (no PostgreSQL required).
+
+```bash
+cd stora-backend
+
+# Run all tests
+python -m pytest tests/ -v
+
+# Run a specific test file
+python -m pytest tests/test_auth.py -v
+
+# Run with coverage (install pytest-cov first)
+python -m pytest tests/ --cov=app --cov-report=term-missing
+```
+
+### Test structure
+
+| File                             | Tests | Coverage                                 |
+| -------------------------------- | ----- | ---------------------------------------- |
+| `test_health.py`                 | 1     | Health check endpoint                    |
+| `test_auth.py`                   | 10    | Register, login, token validation        |
+| `test_users.py`                  | 5     | User CRUD operations                     |
+| `test_plans.py`                  | 6     | Plan CRUD operations                     |
+| `test_tenants.py`                | 6     | Tenant CRUD operations                   |
+| `test_products.py`               | 5     | Product CRUD operations                  |
+| `test_invitations.py`            | 4     | Invitation CRUD operations               |
+| `test_memberships_orders.py`     | 8     | Membership & Order CRUD operations       |
+
+---
+
+## CI Pipeline
+
+The GitHub Actions workflow (`.github/workflows/ci.yml`) runs on every push and PR to `main`:
+
+1. **Lint** – Checks code style with `ruff check` and `ruff format`.
+2. **Test** – Runs the full pytest suite (45 tests) with in-memory SQLite.
+3. **Build** – Builds the Docker image to verify the Dockerfile.
 
 ---
 

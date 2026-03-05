@@ -9,7 +9,9 @@ class Token(BaseModel):
     """Schema for the JWT access-token response."""
 
     access_token: str = Field(..., description="JWT access token.")
-    token_type: str = Field(default="bearer", description="Token type (always 'bearer').")
+    token_type: str = Field(
+        default="bearer", description="Token type (always 'bearer')."
+    )
 
 
 class TokenData(BaseModel):

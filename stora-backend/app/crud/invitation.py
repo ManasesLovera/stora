@@ -15,17 +15,13 @@ from app.schemas.invitation import InvitationCreate
 
 async def get_invitation(db: AsyncSession, invitation_id: UUID) -> Invitation | None:
     """Return a single invitation by primary key, or ``None``."""
-    result = await db.execute(
-        select(Invitation).where(Invitation.id == invitation_id)
-    )
+    result = await db.execute(select(Invitation).where(Invitation.id == invitation_id))
     return result.scalars().first()
 
 
 async def get_invitation_by_token(db: AsyncSession, token: str) -> Invitation | None:
     """Return an invitation by its unique token, or ``None``."""
-    result = await db.execute(
-        select(Invitation).where(Invitation.token == token)
-    )
+    result = await db.execute(select(Invitation).where(Invitation.token == token))
     return result.scalars().first()
 
 

@@ -25,10 +25,7 @@ async def get_products_by_tenant(
 ) -> list[Product]:
     """Return products for a given tenant."""
     result = await db.execute(
-        select(Product)
-        .where(Product.tenant_id == tenant_id)
-        .offset(skip)
-        .limit(limit)
+        select(Product).where(Product.tenant_id == tenant_id).offset(skip).limit(limit)
     )
     return list(result.scalars().all())
 

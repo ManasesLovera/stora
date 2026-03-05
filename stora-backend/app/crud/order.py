@@ -25,10 +25,7 @@ async def get_orders_by_tenant(
 ) -> list[Order]:
     """Return orders for a given tenant."""
     result = await db.execute(
-        select(Order)
-        .where(Order.tenant_id == tenant_id)
-        .offset(skip)
-        .limit(limit)
+        select(Order).where(Order.tenant_id == tenant_id).offset(skip).limit(limit)
     )
     return list(result.scalars().all())
 
@@ -41,10 +38,7 @@ async def get_orders_by_user(
 ) -> list[Order]:
     """Return orders placed by a given user."""
     result = await db.execute(
-        select(Order)
-        .where(Order.user_id == user_id)
-        .offset(skip)
-        .limit(limit)
+        select(Order).where(Order.user_id == user_id).offset(skip).limit(limit)
     )
     return list(result.scalars().all())
 

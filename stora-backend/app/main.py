@@ -39,9 +39,7 @@ def _run_migrations() -> None:
         text=True,
     )
     if result.returncode != 0:
-        raise RuntimeError(
-            f"Alembic migration failed:\n{result.stderr}"
-        )
+        raise RuntimeError(f"Alembic migration failed:\n{result.stderr}")
 
 
 # ── Lifespan (startup / shutdown) ───────────────────────────

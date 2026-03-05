@@ -17,7 +17,11 @@ from app.crud.appointment import (
 )
 from app.database import get_db
 from app.models.user import User
-from app.schemas.appointment import AppointmentCreate, AppointmentRead, AppointmentUpdate
+from app.schemas.appointment import (
+    AppointmentCreate,
+    AppointmentRead,
+    AppointmentUpdate,
+)
 
 router = APIRouter()
 

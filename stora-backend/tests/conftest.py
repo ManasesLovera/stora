@@ -37,6 +37,7 @@ def get_test_settings() -> Settings:
 
 # ── Fixtures ─────────────────────────────────────────────────
 
+
 @pytest_asyncio.fixture
 async def db_session() -> AsyncGenerator[AsyncSession, None]:
     """

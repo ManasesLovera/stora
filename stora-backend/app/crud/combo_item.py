@@ -13,9 +13,7 @@ from app.schemas.combo_item import ComboItemCreate, ComboItemUpdate
 
 async def get_combo_item(db: AsyncSession, combo_item_id: UUID) -> ComboItem | None:
     """Return a single combo item by primary key, or ``None``."""
-    result = await db.execute(
-        select(ComboItem).where(ComboItem.id == combo_item_id)
-    )
+    result = await db.execute(select(ComboItem).where(ComboItem.id == combo_item_id))
     return result.scalars().first()
 
 
@@ -24,9 +22,7 @@ async def get_combo_items_by_parent(
     parent_id: UUID,
 ) -> list[ComboItem]:
     """Return all combo items for a given parent (combo) product."""
-    result = await db.execute(
-        select(ComboItem).where(ComboItem.parent_id == parent_id)
-    )
+    result = await db.execute(select(ComboItem).where(ComboItem.parent_id == parent_id))
     return list(result.scalars().all())
 
 
