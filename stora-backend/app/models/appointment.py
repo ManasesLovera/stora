@@ -4,6 +4,7 @@ and a staff member within a tenant.
 """
 
 import uuid
+from datetime import datetime
 
 from sqlalchemy import DateTime, ForeignKey, String
 from sqlalchemy.dialects.postgresql import UUID
@@ -51,7 +52,7 @@ class Appointment(Base):
         nullable=False,
         comment="FK → memberships.id – assigned staff member.",
     )
-    scheduled_at: Mapped[str] = mapped_column(
+    scheduled_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True),
         nullable=False,
         comment="Date and time of the appointment.",
