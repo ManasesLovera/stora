@@ -6,7 +6,7 @@ quantity.
 
 import uuid
 
-from sqlalchemy import ForeignKey, Integer, Uuid
+from sqlalchemy import ForeignKey, Integer, Text, Uuid
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.database import Base
@@ -21,6 +21,7 @@ class ComboItem(Base):
         parent_id: FK → products.id – the combo product.
         child_id:  FK → products.id – the contained product.
         quantity:  How many units of the child product are in the combo.
+        image_url: Base64-encoded combo item image (optional).
     """
 
     __tablename__ = "combo_items"
@@ -48,6 +49,12 @@ class ComboItem(Base):
         nullable=False,
         default=1,
         comment="Number of child product units in the combo.",
+    )
+    image_url: Mapped[str | None] = mapped_column(
+        Text,
+        nullable=True,
+        default=None,
+        comment="Base64-encoded combo item image (data URI).",
     )
 
     # ── Relationships ────────────────────────────────────────

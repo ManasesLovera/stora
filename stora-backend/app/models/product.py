@@ -5,7 +5,7 @@ A product may be a simple item or a **combo** (bundle of other products).
 
 import uuid
 
-from sqlalchemy import Boolean, ForeignKey, Integer, Numeric, String, Uuid
+from sqlalchemy import Boolean, ForeignKey, Integer, Numeric, String, Text, Uuid
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.database import Base
@@ -22,6 +22,7 @@ class Product(Base):
         price:     Unit price.
         is_combo:  Whether this product is a bundle of other products.
         stock:     Available inventory count.
+        image_url: Base64-encoded product image (optional).
     """
 
     __tablename__ = "products"
@@ -59,6 +60,12 @@ class Product(Base):
         nullable=False,
         default=0,
         comment="Available inventory count.",
+    )
+    image_url: Mapped[str | None] = mapped_column(
+        Text,
+        nullable=True,
+        default=None,
+        comment="Base64-encoded product image (data URI).",
     )
 
     # ── Relationships ────────────────────────────────────────

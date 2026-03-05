@@ -1,6 +1,8 @@
 """
-Tests for the Products CRUD endpoints.
+Tests for the Products CRUD endpoints, including image upload.
 """
+
+import io
 
 import pytest
 from httpx import AsyncClient
@@ -50,6 +52,24 @@ async def test_create_product(client: AsyncClient):
     assert data["name"] == "Cappuccino"
     assert data["price"] == 4.5
     assert data["stock"] == 100
+    assert data["image_url"] is None
+
+
+@pytest.mark.asyncio
+async def test_create_product_with_image_url(client: AsyncClient):
+    """POST /api/v1/products/ can include image_url at creation."""
+    headers = await get_auth_header(client)
+    tenant_id = await setup_tenant(client, headers)
+
+    payload = {
+        **PRODUCT_PAYLOAD,
+        "image_url": "data:image/png;base64,iVBORw0KGgo=",
+    }
+    response = await create_product(client, headers, tenant_id, payload=payload)
+    assert response.status_code == 201
+
+    data = response.json()
+    assert data["image_url"] == "data:image/png;base64,iVBORw0KGgo="
 
 
 @pytest.mark.asyncio
@@ -96,6 +116,23 @@ async def test_update_product(client: AsyncClient):
 
 
 @pytest.mark.asyncio
+async def test_update_product_image_url(client: AsyncClient):
+    """PATCH /api/v1/products/{id} can set image_url via JSON update."""
+    headers = await get_auth_header(client)
+    tenant_id = await setup_tenant(client, headers)
+    create_resp = await create_product(client, headers, tenant_id)
+    product_id = create_resp.json()["id"]
+
+    response = await client.patch(
+        f"/api/v1/products/{product_id}",
+        json={"image_url": "data:image/png;base64,abc123"},
+        headers=headers,
+    )
+    assert response.status_code == 200
+    assert response.json()["image_url"] == "data:image/png;base64,abc123"
+
+
+@pytest.mark.asyncio
 async def test_delete_product(client: AsyncClient):
     """DELETE /api/v1/products/{id} removes the product."""
     headers = await get_auth_header(client)
@@ -108,3 +145,90 @@ async def test_delete_product(client: AsyncClient):
 
     get_resp = await client.get(f"/api/v1/products/{product_id}", headers=headers)
     assert get_resp.status_code == 404
+
+
+# ── Image upload endpoint tests ──────────────────────────────
+
+
+@pytest.mark.asyncio
+async def test_upload_product_image(client: AsyncClient):
+    """POST /api/v1/products/{id}/image stores image as base64 data URI."""
+    headers = await get_auth_header(client)
+    tenant_id = await setup_tenant(client, headers)
+    create_resp = await create_product(client, headers, tenant_id)
+    product_id = create_resp.json()["id"]
+
+    # Create a small fake PNG (1x1 pixel)
+    fake_png = (
+        b"\x89PNG\r\n\x1a\n\x00\x00\x00\rIHDR\x00\x00\x00\x01"
+        b"\x00\x00\x00\x01\x08\x02\x00\x00\x00\x90wS\xde"
+    )
+    file = io.BytesIO(fake_png)
+
+    response = await client.post(
+        f"/api/v1/products/{product_id}/image",
+        files={"file": ("test.png", file, "image/png")},
+        headers=headers,
+    )
+    assert response.status_code == 200
+
+    data = response.json()
+    assert data["image_url"] is not None
+    assert data["image_url"].startswith("data:image/png;base64,")
+
+
+@pytest.mark.asyncio
+async def test_upload_product_image_invalid_type(client: AsyncClient):
+    """POST /api/v1/products/{id}/image rejects non-image files."""
+    headers = await get_auth_header(client)
+    tenant_id = await setup_tenant(client, headers)
+    create_resp = await create_product(client, headers, tenant_id)
+    product_id = create_resp.json()["id"]
+
+    file = io.BytesIO(b"not an image")
+    response = await client.post(
+        f"/api/v1/products/{product_id}/image",
+        files={"file": ("test.txt", file, "text/plain")},
+        headers=headers,
+    )
+    assert response.status_code == 400
+    assert "Invalid image type" in response.json()["detail"]
+
+
+@pytest.mark.asyncio
+async def test_upload_product_image_not_found(client: AsyncClient):
+    """POST /api/v1/products/{id}/image returns 404 for missing product."""
+    headers = await get_auth_header(client)
+    fake_id = "00000000-0000-0000-0000-000000000000"
+
+    file = io.BytesIO(b"\x89PNG")
+    response = await client.post(
+        f"/api/v1/products/{fake_id}/image",
+        files={"file": ("test.png", file, "image/png")},
+        headers=headers,
+    )
+    assert response.status_code == 404
+
+
+@pytest.mark.asyncio
+async def test_delete_product_image(client: AsyncClient):
+    """DELETE /api/v1/products/{id}/image removes the image."""
+    headers = await get_auth_header(client)
+    tenant_id = await setup_tenant(client, headers)
+
+    # Create product with image
+    payload = {
+        **PRODUCT_PAYLOAD,
+        "image_url": "data:image/png;base64,abc123",
+    }
+    create_resp = await create_product(client, headers, tenant_id, payload=payload)
+    product_id = create_resp.json()["id"]
+    assert create_resp.json()["image_url"] is not None
+
+    # Delete image
+    response = await client.delete(
+        f"/api/v1/products/{product_id}/image",
+        headers=headers,
+    )
+    assert response.status_code == 200
+    assert response.json()["image_url"] is None

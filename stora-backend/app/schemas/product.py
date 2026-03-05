@@ -34,6 +34,11 @@ class ProductCreate(BaseModel):
         description="Available inventory count.",
         examples=[100],
     )
+    image_url: str | None = Field(
+        default=None,
+        description="Base64-encoded product image as a data URI.",
+        examples=["data:image/png;base64,iVBORw0KGgo..."],
+    )
 
 
 class ProductUpdate(BaseModel):
@@ -43,6 +48,10 @@ class ProductUpdate(BaseModel):
     price: float | None = Field(default=None, ge=0)
     is_combo: bool | None = Field(default=None)
     stock: int | None = Field(default=None, ge=0)
+    image_url: str | None = Field(
+        default=None,
+        description="Base64-encoded product image as a data URI.",
+    )
 
 
 class ProductRead(BaseModel):
@@ -56,3 +65,7 @@ class ProductRead(BaseModel):
     price: float = Field(..., description="Unit price.")
     is_combo: bool = Field(..., description="Combo flag.")
     stock: int = Field(..., description="Stock count.")
+    image_url: str | None = Field(
+        default=None,
+        description="Base64-encoded product image (data URI).",
+    )

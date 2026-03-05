@@ -18,12 +18,21 @@ class ComboItemCreate(BaseModel):
         description="Number of units of the child product.",
         examples=[2],
     )
+    image_url: str | None = Field(
+        default=None,
+        description="Base64-encoded combo item image as a data URI.",
+        examples=["data:image/png;base64,iVBORw0KGgo..."],
+    )
 
 
 class ComboItemUpdate(BaseModel):
     """Schema for updating a combo item."""
 
     quantity: int | None = Field(default=None, ge=1)
+    image_url: str | None = Field(
+        default=None,
+        description="Base64-encoded combo item image as a data URI.",
+    )
 
 
 class ComboItemRead(BaseModel):
@@ -35,3 +44,7 @@ class ComboItemRead(BaseModel):
     parent_id: UUID = Field(..., description="FK to combo product.")
     child_id: UUID = Field(..., description="FK to contained product.")
     quantity: int = Field(..., description="Quantity in the combo.")
+    image_url: str | None = Field(
+        default=None,
+        description="Base64-encoded combo item image (data URI).",
+    )
