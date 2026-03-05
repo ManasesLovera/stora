@@ -32,19 +32,20 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Set up Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: "3.12"
+      - name: Install uv
+        uses: astral-sh/setup-uv@v5
 
-      - name: Install ruff
-        run: pip install ruff
+      - name: Set up Python
+        run: uv python install 3.12
+
+      - name: Install dependencies
+        run: uv sync --frozen
 
       - name: Run ruff check
-        run: ruff check app/ tests/
+        run: uv run ruff check app/ tests/
 
       - name: Run ruff format check
-        run: ruff format --check app/ tests/
+        run: uv run ruff format --check app/ tests/
 
   # ── Test ─────────────────────────────────────────────────
   test:
@@ -57,16 +58,17 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Install uv
+        uses: astral-sh/setup-uv@v5
+
       - name: Set up Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: "3.12"
+        run: uv python install 3.12
 
       - name: Install dependencies
-        run: pip install -r requirements.txt
+        run: uv sync --frozen
 
       - name: Run tests
-        run: python -m pytest tests/ -v --tb=short
+        run: uv run pytest tests/ -v --tb=short
 
   # ── Docker Build ─────────────────────────────────────────
   build:

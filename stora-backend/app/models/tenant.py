@@ -6,7 +6,7 @@ and settings.
 
 import uuid
 
-from sqlalchemy import Boolean, ForeignKey, JSON, String, Uuid
+from sqlalchemy import JSON, Boolean, ForeignKey, String, Uuid
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.database import Base

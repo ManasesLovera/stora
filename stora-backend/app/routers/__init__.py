@@ -5,16 +5,16 @@ Routers package – collects all endpoint routers into a single
 
 from fastapi import APIRouter
 
-from app.routers.auth import router as auth_router
-from app.routers.users import router as users_router
-from app.routers.plans import router as plans_router
-from app.routers.tenants import router as tenants_router
-from app.routers.memberships import router as memberships_router
-from app.routers.invitations import router as invitations_router
-from app.routers.products import router as products_router
-from app.routers.combo_items import router as combo_items_router
-from app.routers.orders import router as orders_router
 from app.routers.appointments import router as appointments_router
+from app.routers.auth import router as auth_router
+from app.routers.combo_items import router as combo_items_router
+from app.routers.invitations import router as invitations_router
+from app.routers.memberships import router as memberships_router
+from app.routers.orders import router as orders_router
+from app.routers.plans import router as plans_router
+from app.routers.products import router as products_router
+from app.routers.tenants import router as tenants_router
+from app.routers.users import router as users_router
 
 api_router = APIRouter()
 

@@ -1,6 +1,7 @@
 # Stora – SaaS E-Commerce & Appointment Platform
 
 A multi-tenant backend built with **FastAPI**, **SQLAlchemy** (async), and **PostgreSQL**.
+Managed with [**uv**](https://docs.astral.sh/uv/) for fast, reproducible dependency management.
 
 ---
 
@@ -27,11 +28,11 @@ stora/
 ├── .github/workflows/ci.yml    # GitHub Actions CI pipeline
 ├── docker-compose.yml          # Orchestrates backend + Postgres
 ├── stora-backend/
-│   ├── Dockerfile              # Multi-stage Python image
-│   ├── requirements.txt        # Python dependencies
+│   ├── Dockerfile              # Multi-stage image with uv
+│   ├── pyproject.toml          # Project metadata & dependencies
+│   ├── uv.lock                 # Lockfile (reproducible installs)
 │   ├── .env.example            # Environment variable template
 │   ├── alembic.ini             # Alembic configuration
-│   ├── pytest.ini              # Pytest configuration
 │   ├── diagram.md              # ER diagram (Mermaid)
 │   ├── alembic/                # Database migrations
 │   │   ├── env.py              # Async migration runner
@@ -54,52 +55,18 @@ stora/
 │       │   ├── security.py     # Password hashing & JWT utils
 │       │   └── dependencies.py # get_current_user dependency
 │       ├── models/             # SQLAlchemy ORM models
-│       │   ├── user.py
-│       │   ├── tenant.py
-│       │   ├── plan.py
-│       │   ├── membership.py
-│       │   ├── invitation.py
-│       │   ├── product.py
-│       │   ├── combo_item.py
-│       │   ├── order.py
-│       │   └── appointment.py
 │       ├── schemas/            # Pydantic request / response schemas
-│       │   ├── user.py
-│       │   ├── tenant.py
-│       │   ├── plan.py
-│       │   ├── membership.py
-│       │   ├── invitation.py
-│       │   ├── product.py
-│       │   ├── combo_item.py
-│       │   ├── order.py
-│       │   ├── appointment.py
-│       │   └── auth.py
 │       ├── crud/               # Database query helpers
-│       │   ├── user.py
-│       │   ├── tenant.py
-│       │   ├── plan.py
-│       │   ├── membership.py
-│       │   ├── invitation.py
-│       │   ├── product.py
-│       │   ├── combo_item.py
-│       │   ├── order.py
-│       │   └── appointment.py
 │       └── routers/            # API endpoint routers
-│           ├── auth.py
-│           ├── users.py
-│           ├── tenants.py
-│           ├── plans.py
-│           ├── memberships.py
-│           ├── invitations.py
-│           ├── products.py
-│           ├── combo_items.py
-│           ├── orders.py
-│           └── appointments.py
 ```
 
 ---
 
 ## Quick Start
+
+### Prerequisites
+
+- [uv](https://docs.astral.sh/uv/getting-started/installation/) (recommended) or Docker
 
 ### 1. Clone & configure
 
@@ -130,13 +97,11 @@ The API will be available at **http://localhost:8000**.
 
 ```bash
 cd stora-backend
-python -m venv .venv
-source .venv/bin/activate   # Windows: .venv\Scripts\activate
-pip install -r requirements.txt
+uv sync                   # Install all dependencies (incl. dev)
 
 # Make sure Postgres is running and .env points to it
 # (set POSTGRES_HOST=localhost if running Postgres on the host)
-uvicorn app.main:app --reload
+uv run uvicorn app.main:app --reload
 ```
 
 ---
@@ -231,15 +196,16 @@ All business endpoints live under `/api/v1`. Protected endpoints require a `Bear
 Migrations are managed with **Alembic** and run automatically when the application starts.
 
 ```bash
-# Generate a new migration after model changes
 cd stora-backend
-alembic revision --autogenerate -m "description_of_change"
+
+# Generate a new migration after model changes
+uv run alembic revision --autogenerate -m "description_of_change"
 
 # Apply migrations manually
-alembic upgrade head
+uv run alembic upgrade head
 
 # Downgrade one revision
-alembic downgrade -1
+uv run alembic downgrade -1
 ```
 
 ---
@@ -252,13 +218,13 @@ The test suite uses **pytest** with **pytest-asyncio** and an **in-memory SQLite
 cd stora-backend
 
 # Run all tests
-python -m pytest tests/ -v
+uv run pytest tests/ -v
 
 # Run a specific test file
-python -m pytest tests/test_auth.py -v
+uv run pytest tests/test_auth.py -v
 
 # Run with coverage (install pytest-cov first)
-python -m pytest tests/ --cov=app --cov-report=term-missing
+uv run pytest tests/ --cov=app --cov-report=term-missing
 ```
 
 ### Test structure
@@ -280,8 +246,8 @@ python -m pytest tests/ --cov=app --cov-report=term-missing
 
 The GitHub Actions workflow (`.github/workflows/ci.yml`) runs on every push and PR to `main`:
 
-1. **Lint** – Checks code style with `ruff check` and `ruff format`.
-2. **Test** – Runs the full pytest suite (45 tests) with in-memory SQLite.
+1. **Lint** – Checks code style with `ruff check` and `ruff format` (via uv).
+2. **Test** – Runs the full pytest suite (45 tests) with in-memory SQLite (via uv).
 3. **Build** – Builds the Docker image to verify the Dockerfile.
 
 ---

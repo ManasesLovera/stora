@@ -33,3 +33,6 @@ Thumbs.db
 
 # Testing
 .pytest_cache/
+
+# Package manager
+.uv/
