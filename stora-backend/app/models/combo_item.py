@@ -6,8 +6,7 @@ quantity.
 
 import uuid
 
-from sqlalchemy import ForeignKey, Integer
-from sqlalchemy.dialects.postgresql import UUID
+from sqlalchemy import ForeignKey, Integer, Uuid
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.database import Base
@@ -27,19 +26,19 @@ class ComboItem(Base):
     __tablename__ = "combo_items"
 
     id: Mapped[uuid.UUID] = mapped_column(
-        UUID(as_uuid=True),
+        Uuid,
         primary_key=True,
         default=uuid.uuid4,
         comment="Primary key – auto-generated UUID.",
     )
     parent_id: Mapped[uuid.UUID] = mapped_column(
-        UUID(as_uuid=True),
+        Uuid,
         ForeignKey("products.id"),
         nullable=False,
         comment="FK → products.id – the combo product.",
     )
     child_id: Mapped[uuid.UUID] = mapped_column(
-        UUID(as_uuid=True),
+        Uuid,
         ForeignKey("products.id"),
         nullable=False,
         comment="FK → products.id – the contained product.",

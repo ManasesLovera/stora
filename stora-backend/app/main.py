@@ -3,8 +3,8 @@ Stora Backend – FastAPI Application Entry Point
 ================================================
 
 This module creates the FastAPI application instance, wires up routers
-and middleware, and exposes a startup event that creates database
-tables automatically on first launch.
+and middleware, and exposes a startup event that runs Alembic
+migrations automatically on launch.
 
 Run locally with:
     uvicorn app.main:app --reload
@@ -13,14 +13,35 @@ Or via Docker:
     docker compose up --build
 """
 
+import subprocess
+import sys
 from contextlib import asynccontextmanager
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from app.config import get_settings
-from app.database import Base, engine
 from app.routers import api_router
+
+
+def _run_migrations() -> None:
+    """
+    Execute Alembic migrations up to the latest revision.
+
+    Called during application startup to ensure the database schema is
+    always up-to-date.  Runs as a subprocess so that the async event
+    loop used by Alembic's ``env.py`` does not conflict with the
+    already-running FastAPI event loop.
+    """
+    result = subprocess.run(
+        [sys.executable, "-m", "alembic", "upgrade", "head"],
+        capture_output=True,
+        text=True,
+    )
+    if result.returncode != 0:
+        raise RuntimeError(
+            f"Alembic migration failed:\n{result.stderr}"
+        )
 
 
 # ── Lifespan (startup / shutdown) ───────────────────────────
@@ -29,14 +50,12 @@ async def lifespan(_app: FastAPI):
     """
     Application lifespan handler.
 
-    On startup:  create all database tables that do not yet exist.
-    On shutdown: dispose of the async engine connection pool.
+    On startup:  run Alembic migrations to bring the DB to the latest
+                 revision.
+    On shutdown: nothing special (engine cleanup is handled elsewhere).
     """
-    # Create tables (safe to call repeatedly – only creates missing ones)
-    async with engine.begin() as conn:
-        await conn.run_sync(Base.metadata.create_all)
+    _run_migrations()
     yield
-    await engine.dispose()
 
 
 # ── Application factory ─────────────────────────────────────

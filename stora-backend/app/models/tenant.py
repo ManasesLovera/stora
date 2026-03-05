@@ -6,8 +6,7 @@ and settings.
 
 import uuid
 
-from sqlalchemy import Boolean, ForeignKey, String
-from sqlalchemy.dialects.postgresql import JSONB, UUID
+from sqlalchemy import Boolean, ForeignKey, JSON, String, Uuid
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.database import Base
@@ -29,7 +28,7 @@ class Tenant(Base):
     __tablename__ = "tenants"
 
     id: Mapped[uuid.UUID] = mapped_column(
-        UUID(as_uuid=True),
+        Uuid,
         primary_key=True,
         default=uuid.uuid4,
         comment="Primary key – auto-generated UUID.",
@@ -47,13 +46,13 @@ class Tenant(Base):
         comment="URL-safe unique slug for the tenant.",
     )
     plan_id: Mapped[uuid.UUID] = mapped_column(
-        UUID(as_uuid=True),
+        Uuid,
         ForeignKey("plans.id"),
         nullable=False,
         comment="FK → plans.id – subscription plan for this tenant.",
     )
     settings: Mapped[dict] = mapped_column(
-        JSONB,
+        JSON,
         nullable=False,
         default=dict,
         comment="JSON with theme, logos, active_features, etc.",

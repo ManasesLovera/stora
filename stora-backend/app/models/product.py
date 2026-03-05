@@ -5,8 +5,7 @@ A product may be a simple item or a **combo** (bundle of other products).
 
 import uuid
 
-from sqlalchemy import Boolean, ForeignKey, Integer, Numeric, String
-from sqlalchemy.dialects.postgresql import UUID
+from sqlalchemy import Boolean, ForeignKey, Integer, Numeric, String, Uuid
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.database import Base
@@ -28,13 +27,13 @@ class Product(Base):
     __tablename__ = "products"
 
     id: Mapped[uuid.UUID] = mapped_column(
-        UUID(as_uuid=True),
+        Uuid,
         primary_key=True,
         default=uuid.uuid4,
         comment="Primary key – auto-generated UUID.",
     )
     tenant_id: Mapped[uuid.UUID] = mapped_column(
-        UUID(as_uuid=True),
+        Uuid,
         ForeignKey("tenants.id"),
         nullable=False,
         comment="FK → tenants.id – owning tenant.",

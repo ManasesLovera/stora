@@ -5,8 +5,7 @@ Plan model – defines the subscription tiers available to tenants
 
 import uuid
 
-from sqlalchemy import Numeric, String
-from sqlalchemy.dialects.postgresql import JSONB, UUID
+from sqlalchemy import JSON, Numeric, String, Uuid
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.database import Base
@@ -28,7 +27,7 @@ class Plan(Base):
     __tablename__ = "plans"
 
     id: Mapped[uuid.UUID] = mapped_column(
-        UUID(as_uuid=True),
+        Uuid,
         primary_key=True,
         default=uuid.uuid4,
         comment="Primary key – auto-generated UUID.",
@@ -50,7 +49,7 @@ class Plan(Base):
         comment="Billing cycle: 'monthly' or 'yearly'.",
     )
     features: Mapped[dict] = mapped_column(
-        JSONB,
+        JSON,
         nullable=False,
         default=dict,
         comment="JSON with feature flags and limits.",
