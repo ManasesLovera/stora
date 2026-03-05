@@ -1,0 +1,82 @@
+# ──────────────────────────────────────────────────────────────
+# Stora Backend – CI Pipeline
+#
+# Runs on every push and pull request to the main branch.
+#
+# Jobs:
+#   1. lint    – Check code style with ruff (fast Python linter).
+#   2. test    – Run the pytest test suite with in-memory SQLite.
+#   3. build   – Build the Docker image to verify Dockerfile is valid.
+# ──────────────────────────────────────────────────────────────
+
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  # ── Lint ─────────────────────────────────────────────────
+  lint:
+    name: Lint
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: stora-backend
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v5
+
+      - name: Set up Python
+        run: uv python install 3.12
+
+      - name: Install dependencies
+        run: uv sync --frozen
+
+      - name: Run ruff check
+        run: uv run ruff check app/ tests/
+
+      - name: Run ruff format check
+        run: uv run ruff format --check app/ tests/
+
+  # ── Test ─────────────────────────────────────────────────
+  test:
+    name: Test
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: stora-backend
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v5
+
+      - name: Set up Python
+        run: uv python install 3.12
+
+      - name: Install dependencies
+        run: uv sync --frozen
+
+      - name: Run tests
+        run: uv run pytest tests/ -v --tb=short
+
+  # ── Docker Build ─────────────────────────────────────────
+  build:
+    name: Docker Build
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build Docker image
+        run: docker build -t stora-backend ./stora-backend
