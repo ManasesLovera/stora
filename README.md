@@ -1,6 +1,10 @@
-# Stora – SaaS E-Commerce & Appointment Platform
+# Stora – Multi-Tenant E-Commerce & Appointment Platform
 
-A multi-tenant backend built with **FastAPI**, **SQLAlchemy** (async), and **PostgreSQL**.
+> 🚧 **Status: In Progress** — This project is under active development. The backend API is functional; frontend and additional features are coming soon.
+
+Stora is a multi-tenant ecommerce platform where users can easily create tenants (companies), link themselves as owners, invite staff members, manage customers, products, and combos — all from a single platform. Users can also serve as staff or customers for other tenants.
+
+Built with **FastAPI**, **SQLAlchemy** (async), and **PostgreSQL**.
 Managed with [**uv**](https://docs.astral.sh/uv/) for fast, reproducible dependency management.
 
 ---
@@ -18,6 +22,21 @@ Managed with [**uv**](https://docs.astral.sh/uv/) for fast, reproducible depende
 - **Test suite** – 45 tests covering auth, CRUD, and health check (pytest + httpx + aiosqlite).
 - **CI pipeline** – GitHub Actions workflow for linting, testing, and Docker build.
 - **Interactive docs** – Swagger UI at `/docs`, ReDoc at `/redoc`.
+
+---
+
+## Roadmap
+
+The following features are planned for future development:
+
+- [ ] **Frontend application** – Web-based UI for tenants, staff, and customers.
+- [ ] **Role-based access control** – Enforce permissions per role (owner, co-owner, admin, staff) at the API level.
+- [ ] **Payment integration** – Process orders and subscription billing.
+- [ ] **Email notifications** – Send invitation emails and order/appointment confirmations.
+- [ ] **Tenant theming & branding** – Custom logos, colors, and settings per tenant.
+- [ ] **AI-powered features** – Available in Enterprise plan (as defined in the plan schema).
+- [ ] **Appointment scheduling UI** – Calendar-based booking for staff and customers.
+- [ ] **Product image storage** – Move from base64 data URIs to cloud-based file storage.
 
 ---
 
@@ -187,7 +206,6 @@ All business endpoints live under `/api/v1`. Protected endpoints require a `Bear
 - **UUID primary keys**: every entity uses `uuid4` for IDs.
 - **Environment-based config**: `pydantic-settings` loads from `.env` with sensible defaults.
 - **Alembic migrations**: schema changes are versioned; migrations auto-run on startup.
-- **Well-commented code**: every module, class, function, and column has docstrings/comments.
 
 ---
 
