@@ -1,0 +1,168 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Atelier – Stora design sample</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,400;9..144,500&family=Instrument+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bone: #f4efe6;
+    --paper: #fbf8f2;
+    --ink: #1c1a17;
+    --muted: #6f685d;
+    --line: #ddd5c7;
+    --clay: #b94a2c;
+    --clay-ink: #8f3318;
+    --moss: #4a5a3c;
+    --sand: #e3d3b8;
+    --rose: #d9b3a3;
+    --radius: 4px;
+    --serif: "Fraunces", Georgia, serif;
+    --sans: "Instrument Sans", system-ui, sans-serif;
+  }
+  * { box-sizing: border-box; margin: 0; }
+  body { background: var(--bone); color: var(--ink); font-family: var(--sans); font-size: 16px; line-height: 1.55; -webkit-font-smoothing: antialiased; }
+  a { color: inherit; text-decoration: none; }
+  .wrap { max-width: 1200px; margin: 0 auto; padding: 0 24px; }
+
+  .bar { background: var(--ink); color: var(--bone); font-size: 13px; text-align: center; padding: 8px 16px; letter-spacing: .02em; }
+
+  header.nav { display: flex; align-items: center; justify-content: space-between; padding: 22px 0; border-bottom: 1px solid var(--line); }
+  .logo { font-family: var(--serif); font-size: 26px; font-weight: 400; letter-spacing: -.02em; }
+  .logo i { color: var(--clay); font-style: normal; }
+  nav ul { display: flex; gap: 32px; list-style: none; padding: 0; font-size: 15px; }
+  nav a { padding-bottom: 2px; border-bottom: 1px solid transparent; }
+  nav a:hover { border-color: var(--ink); }
+  .tools { display: flex; gap: 20px; font-size: 15px; }
+
+  .hero { display: grid; grid-template-columns: 1.1fr 1fr; gap: 56px; align-items: center; padding: 72px 0 88px; }
+  .eyebrow { font-size: 13px; text-transform: uppercase; letter-spacing: .14em; color: var(--clay-ink); font-weight: 600; }
+  h1 { font-family: var(--serif); font-weight: 300; font-size: clamp(44px, 6.4vw, 84px); line-height: 1.02; letter-spacing: -.03em; margin: 18px 0 24px; font-variation-settings: "opsz" 144; }
+  h1 em { font-style: italic; color: var(--clay); font-weight: 300; }
+  .lede { max-width: 46ch; color: var(--muted); font-size: 18px; }
+  .cta { display: flex; gap: 12px; margin-top: 36px; flex-wrap: wrap; }
+  .btn { display: inline-flex; align-items: center; gap: 8px; padding: 14px 26px; border-radius: var(--radius); font-weight: 600; font-size: 15px; border: 1px solid var(--ink); transition: background .15s, color .15s, transform .15s; }
+  .btn.solid { background: var(--ink); color: var(--bone); }
+  .btn.solid:hover { background: var(--clay-ink); border-color: var(--clay-ink); }
+  .btn.ghost:hover { background: var(--ink); color: var(--bone); }
+  .btn:active { transform: translateY(1px); }
+
+  .stage { position: relative; aspect-ratio: 4 / 5; background: var(--sand); border-radius: var(--radius); overflow: hidden; }
+  .stage .sun { position: absolute; width: 58%; aspect-ratio: 1; border-radius: 50%; background: var(--clay); left: 21%; top: 12%; }
+  .stage .arch { position: absolute; width: 46%; height: 52%; left: 27%; bottom: 0; background: var(--paper); border-radius: 999px 999px 0 0; }
+  .stage .pot { position: absolute; width: 20%; height: 22%; left: 40%; bottom: 0; background: var(--moss); border-radius: 40% 40% 6px 6px / 30% 30% 6px 6px; }
+  .stage .tag { position: absolute; right: 16px; bottom: 16px; background: var(--paper); padding: 10px 14px; border-radius: var(--radius); font-size: 13px; }
+  .stage .tag b { display: block; font-family: var(--serif); font-weight: 400; font-size: 17px; }
+
+  section.block { padding: 72px 0; border-top: 1px solid var(--line); }
+  .head { display: flex; justify-content: space-between; align-items: end; margin-bottom: 36px; gap: 16px; flex-wrap: wrap; }
+  h2 { font-family: var(--serif); font-weight: 300; font-size: clamp(30px, 4vw, 46px); letter-spacing: -.02em; line-height: 1.1; }
+  .link { border-bottom: 1px solid var(--ink); font-size: 15px; padding-bottom: 2px; }
+
+  .grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 28px 20px; }
+  .card .img { aspect-ratio: 3 / 4; border-radius: var(--radius); position: relative; overflow: hidden; transition: transform .3s; }
+  .card:hover .img { transform: translateY(-4px); }
+  .card .img span { position: absolute; left: 12px; top: 12px; background: var(--paper); font-size: 12px; font-weight: 600; padding: 3px 9px; border-radius: 999px; }
+  .card h3 { font-family: var(--serif); font-weight: 400; font-size: 20px; margin-top: 14px; letter-spacing: -.01em; }
+  .card p { color: var(--muted); font-size: 14px; }
+  .card .price { margin-top: 4px; font-weight: 600; font-variant-numeric: tabular-nums; }
+  .i1 { background: var(--rose); } .i2 { background: var(--sand); } .i3 { background: #c9d0bd; } .i4 { background: #d8c9c0; }
+  .shape { position: absolute; inset: 0; display: grid; place-items: center; }
+  .shape i { display: block; background: var(--ink); opacity: .86; }
+  .s-vase i { width: 34%; height: 52%; border-radius: 45% 45% 18% 18% / 30% 30% 12% 12%; background: var(--clay); }
+  .s-bowl i { width: 56%; height: 28%; border-radius: 0 0 999px 999px; background: var(--paper); }
+  .s-cup i { width: 36%; height: 34%; border-radius: 6px 6px 40% 40%; background: var(--moss); }
+  .s-plate i { width: 62%; aspect-ratio: 1; border-radius: 50%; background: var(--ink); box-shadow: inset 0 0 0 14px var(--paper); }
+
+  .story { display: grid; grid-template-columns: 1fr 1fr; gap: 56px; align-items: center; }
+  .story .panel { background: var(--moss); color: var(--bone); border-radius: var(--radius); padding: 56px; min-height: 360px; display: flex; flex-direction: column; justify-content: end; }
+  .story .panel q { font-family: var(--serif); font-size: 30px; line-height: 1.2; font-weight: 300; quotes: none; }
+  .story .panel small { margin-top: 18px; opacity: .75; }
+  .facts { display: grid; gap: 22px; margin-top: 28px; }
+  .facts div { display: grid; grid-template-columns: 56px 1fr; gap: 16px; padding-top: 18px; border-top: 1px solid var(--line); }
+  .facts b { font-family: var(--serif); font-size: 26px; font-weight: 300; color: var(--clay); }
+  .facts p { color: var(--muted); }
+
+  footer { background: var(--ink); color: var(--bone); padding: 56px 0 32px; margin-top: 40px; }
+  footer .cols { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 32px; }
+  footer h4 { font-size: 13px; text-transform: uppercase; letter-spacing: .12em; opacity: .6; margin-bottom: 14px; font-weight: 600; }
+  footer li { list-style: none; margin-bottom: 8px; font-size: 15px; }
+  footer ul { padding: 0; }
+  footer .legal { margin-top: 40px; padding-top: 20px; border-top: 1px solid #ffffff22; font-size: 13px; opacity: .6; }
+
+  a:focus-visible, .btn:focus-visible { outline: 2px solid var(--clay); outline-offset: 3px; }
+
+  @media (max-width: 900px) {
+    nav ul { display: none; }
+    .hero, .story { grid-template-columns: 1fr; gap: 32px; padding-top: 40px; }
+    .grid { grid-template-columns: repeat(2, 1fr); }
+    footer .cols { grid-template-columns: 1fr 1fr; }
+    .story .panel { padding: 32px; }
+  }
+</style>
+</head>
+<body>
+  <div class="bar">Free shipping over $60 · Made in small batches</div>
+  <div class="wrap">
+    <header class="nav">
+      <a class="logo" href="#">Atelier<i>.</i></a>
+      <nav><ul><li><a href="#">Shop</a></li><li><a href="#">Ceramics</a></li><li><a href="#">Textiles</a></li><li><a href="#">Journal</a></li></ul></nav>
+      <div class="tools"><a href="#">Search</a><a href="#">Cart (2)</a></div>
+    </header>
+
+    <section class="hero">
+      <div>
+        <p class="eyebrow">Autumn collection</p>
+        <h1>Objects made to be <em>used</em>, slowly.</h1>
+        <p class="lede">Hand-thrown ceramics and woven linens from independent studios. Fewer things, better made, shipped with care.</p>
+        <div class="cta">
+          <a class="btn solid" href="#">Shop the collection</a>
+          <a class="btn ghost" href="#">Meet the makers</a>
+        </div>
+      </div>
+      <div class="stage" aria-hidden="true">
+        <div class="sun"></div><div class="arch"></div><div class="pot"></div>
+        <div class="tag"><b>Terra vase</b>$68</div>
+      </div>
+    </section>
+
+    <section class="block">
+      <div class="head"><h2>New this week</h2><a class="link" href="#">View all</a></div>
+      <div class="grid">
+        <a class="card" href="#"><div class="img i1"><span>New</span><div class="shape s-vase"><i></i></div></div><h3>Terra vase</h3><p>Stoneware, matte glaze</p><div class="price">$68</div></a>
+        <a class="card" href="#"><div class="img i2"><div class="shape s-bowl"><i></i></div></div><h3>Low serving bowl</h3><p>Porcelain, set of 2</p><div class="price">$54</div></a>
+        <a class="card" href="#"><div class="img i3"><span>Low stock</span><div class="shape s-cup"><i></i></div></div><h3>Moss tumbler</h3><p>Stoneware, 280 ml</p><div class="price">$28</div></a>
+        <a class="card" href="#"><div class="img i4"><div class="shape s-plate"><i></i></div></div><h3>Rim dinner plate</h3><p>Stoneware, 27 cm</p><div class="price">$36</div></a>
+      </div>
+    </section>
+
+    <section class="block story">
+      <div class="panel"><q>We make fewer things, and we make them to last longer than the trend that sold them.</q><small>Studio notes, October</small></div>
+      <div>
+        <p class="eyebrow">How we work</p>
+        <h2 style="margin-top:14px">Small batches, honest materials.</h2>
+        <div class="facts">
+          <div><b>01</b><p>Every piece is thrown, glazed and fired by one maker, and signed on the base.</p></div>
+          <div><b>02</b><p>Studios keep 60% of the sale price. No marketplace markup.</p></div>
+          <div><b>03</b><p>Plastic-free packing, and free repairs for chips within a year.</p></div>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <footer>
+    <div class="wrap">
+      <div class="cols">
+        <div><div class="logo">Atelier<i>.</i></div><p style="opacity:.6;margin-top:10px;max-width:32ch">Independent studios, one quiet storefront.</p></div>
+        <div><h4>Shop</h4><ul><li>Ceramics</li><li>Textiles</li><li>Gifts</li></ul></div>
+        <div><h4>Help</h4><ul><li>Shipping</li><li>Returns</li><li>Care</li></ul></div>
+        <div><h4>Studio</h4><ul><li>About</li><li>Journal</li><li>Wholesale</li></ul></div>
+      </div>
+      <div class="legal">© 2026 Atelier. Design sample for Stora.</div>
+    </div>
+  </footer>
+</body>
+</html>
