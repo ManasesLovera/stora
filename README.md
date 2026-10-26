@@ -1,11 +1,12 @@
 # Stora – Multi-Tenant E-Commerce & Appointment Platform
 
-> 🚧 **Status: In Progress** — This project is under active development. The backend API is functional; frontend and additional features are coming soon.
+> 🚧 **Status: In Progress** — This project is under active development. The backend API is functional and the frontend is scaffolded; UI views and additional features are coming soon.
 
 Stora is a multi-tenant ecommerce platform where users can easily create tenants (companies), link themselves as owners, invite staff members, manage customers, products, and combos — all from a single platform. Users can also serve as staff or customers for other tenants.
 
-Built with **FastAPI**, **SQLAlchemy** (async), and **PostgreSQL**.
-Managed with [**uv**](https://docs.astral.sh/uv/) for fast, reproducible dependency management.
+**Backend:** **FastAPI**, **SQLAlchemy** (async), and **PostgreSQL**, managed with [**uv**](https://docs.astral.sh/uv/) for fast, reproducible dependency management.
+
+**Frontend:** **Preact** + **TypeScript**, bundled with **Vite**.
 
 ---
 
@@ -22,6 +23,7 @@ Managed with [**uv**](https://docs.astral.sh/uv/) for fast, reproducible depende
 - **Test suite** – 45 tests covering auth, CRUD, and health check (pytest + httpx + aiosqlite).
 - **CI pipeline** – GitHub Actions workflow for linting, testing, and Docker build.
 - **Interactive docs** – Swagger UI at `/docs`, ReDoc at `/redoc`.
+- **Frontend scaffold** – Preact + TypeScript app built with Vite (dev server, production build, type checking).
 
 ---
 
@@ -29,7 +31,7 @@ Managed with [**uv**](https://docs.astral.sh/uv/) for fast, reproducible depende
 
 The following features are planned for future development:
 
-- [ ] **Frontend application** – Web-based UI for tenants, staff, and customers.
+- [ ] **Frontend application** – Preact + Vite + TypeScript scaffold in place; views for tenants, staff, and customers in progress.
 - [ ] **Role-based access control** – Enforce permissions per role (owner, co-owner, admin, staff) at the API level.
 - [ ] **Payment integration** – Process orders and subscription billing.
 - [ ] **Email notifications** – Send invitation emails and order/appointment confirmations.
@@ -46,6 +48,18 @@ The following features are planned for future development:
 stora/
 ├── .github/workflows/ci.yml    # GitHub Actions CI pipeline
 ├── docker-compose.yml          # Orchestrates backend + Postgres
+├── stora-frontend/
+│   ├── index.html              # Vite entry HTML
+│   ├── package.json            # Frontend metadata & scripts
+│   ├── vite.config.ts          # Vite + Preact configuration
+│   ├── tsconfig*.json          # TypeScript project configs
+│   ├── public/                 # Static assets (favicon, icons)
+│   └── src/
+│       ├── main.tsx            # App bootstrap
+│       ├── app.tsx             # Root component
+│       ├── app.css             # App styles
+│       ├── index.css           # Global styles
+│       └── assets/             # Bundled images
 ├── stora-backend/
 │   ├── Dockerfile              # Multi-stage image with uv
 │   ├── pyproject.toml          # Project metadata & dependencies
@@ -86,6 +100,7 @@ stora/
 ### Prerequisites
 
 - [uv](https://docs.astral.sh/uv/getting-started/installation/) (recommended) or Docker
+- [Node.js](https://nodejs.org/) 20+ and npm (for the frontend)
 
 ### 1. Clone & configure
 
@@ -122,6 +137,22 @@ uv sync                   # Install all dependencies (incl. dev)
 # (set POSTGRES_HOST=localhost if running Postgres on the host)
 uv run uvicorn app.main:app --reload
 ```
+
+### 4. Run the frontend
+
+```bash
+cd stora-frontend
+npm install
+npm run dev
+```
+
+The dev server runs at **http://localhost:5173** by default.
+
+| Script            | Description                                  |
+| ----------------- | -------------------------------------------- |
+| `npm run dev`     | Start the Vite dev server with HMR           |
+| `npm run build`   | Type-check (`tsc -b`) and build for production |
+| `npm run preview` | Preview the production build locally         |
 
 ---
 
@@ -206,6 +237,7 @@ All business endpoints live under `/api/v1`. Protected endpoints require a `Bear
 - **UUID primary keys**: every entity uses `uuid4` for IDs.
 - **Environment-based config**: `pydantic-settings` loads from `.env` with sensible defaults.
 - **Alembic migrations**: schema changes are versioned; migrations auto-run on startup.
+- **Frontend**: component-based Preact with TypeScript, Vite for dev/build, `@preact/preset-vite` for JSX/refresh.
 
 ---
 
