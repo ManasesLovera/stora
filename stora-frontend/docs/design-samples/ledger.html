@@ -1,0 +1,177 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ledger – Stora design sample</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #f7f7f5;
+    --surface: #ffffff;
+    --sunken: #f0f0ed;
+    --ink: #17181a;
+    --muted: #6b6e73;
+    --line: #e4e4e0;
+    --accent: #0b6b4f;
+    --accent-soft: #dff1e9;
+    --accent-ink: #ffffff;
+    --warn: #b45309; --warn-soft: #fdeccd;
+    --bad: #b42318; --bad-soft: #fde3e0;
+    --info: #1d4ed8; --info-soft: #e0e8fd;
+    --radius: 10px;
+    --sans: "Geist", system-ui, sans-serif;
+    --mono: "Geist Mono", ui-monospace, monospace;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #101113; --surface: #17181b; --sunken: #1d1f23; --ink: #ececea; --muted: #8c9096; --line: #2a2c31;
+      --accent: #3ecf9b; --accent-soft: #143528; --accent-ink: #07140f;
+      --warn: #f5b25a; --warn-soft: #3a2a10; --bad: #ff8a80; --bad-soft: #3d1a17; --info: #8fb0ff; --info-soft: #172647;
+    }
+  }
+  * { box-sizing: border-box; margin: 0; }
+  body { background: var(--bg); color: var(--ink); font: 14px/1.5 var(--sans); -webkit-font-smoothing: antialiased; }
+  a { color: inherit; text-decoration: none; }
+  .app { display: grid; grid-template-columns: 232px 1fr; min-height: 100vh; }
+
+  aside { background: var(--surface); border-right: 1px solid var(--line); padding: 18px 12px; display: flex; flex-direction: column; gap: 4px; position: sticky; top: 0; height: 100vh; }
+  .brand { display: flex; align-items: center; gap: 10px; padding: 4px 10px 16px; font-weight: 600; font-size: 16px; letter-spacing: -.01em; }
+  .mark { width: 24px; height: 24px; border-radius: 7px; background: var(--accent); display: grid; place-items: center; color: var(--accent-ink); font-weight: 600; font-size: 13px; }
+  .tenant { margin: 0 4px 14px; padding: 8px 10px; border: 1px solid var(--line); border-radius: 8px; display: flex; justify-content: space-between; font-weight: 500; background: var(--sunken); }
+  .tenant small { color: var(--muted); font-weight: 400; display: block; font-size: 12px; }
+  .item { display: flex; align-items: center; gap: 10px; padding: 7px 10px; border-radius: 8px; color: var(--muted); font-weight: 500; }
+  .item:hover { background: var(--sunken); color: var(--ink); }
+  .item.on { background: var(--accent-soft); color: var(--accent); }
+  .item svg { width: 16px; height: 16px; stroke: currentColor; fill: none; stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; }
+  .label { font-size: 11px; text-transform: uppercase; letter-spacing: .08em; color: var(--muted); padding: 14px 10px 4px; }
+  .plan { margin-top: auto; border: 1px solid var(--line); border-radius: 10px; padding: 12px; font-size: 13px; }
+  .bar { height: 5px; border-radius: 99px; background: var(--sunken); margin: 8px 0 6px; overflow: hidden; }
+  .bar i { display: block; height: 100%; width: 64%; background: var(--accent); }
+
+  main { padding: 24px 32px 48px; max-width: 1180px; }
+  .top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 22px; gap: 12px; flex-wrap: wrap; }
+  h1 { font-size: 22px; font-weight: 600; letter-spacing: -.02em; }
+  .sub { color: var(--muted); }
+  .btn { display: inline-flex; gap: 6px; align-items: center; padding: 7px 13px; border: 1px solid var(--line); background: var(--surface); border-radius: 8px; font-weight: 500; cursor: pointer; font-family: inherit; font-size: 14px; color: var(--ink); }
+  .btn:hover { background: var(--sunken); }
+  .btn.p { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); }
+  .btn.p:hover { filter: brightness(1.08); }
+
+  .kpis { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin-bottom: 14px; }
+  .card { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); }
+  .kpi { padding: 16px 18px; }
+  .kpi .k { color: var(--muted); font-size: 13px; }
+  .kpi .v { font: 500 26px var(--mono); letter-spacing: -.03em; margin: 6px 0 2px; font-variant-numeric: tabular-nums; }
+  .delta { font: 12px var(--mono); }
+  .up { color: var(--accent); } .down { color: var(--bad); }
+
+  .cols { display: grid; grid-template-columns: 1.7fr 1fr; gap: 14px; margin-bottom: 14px; }
+  .pad { padding: 18px; }
+  .ch { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; }
+  .ch h2 { font-size: 15px; font-weight: 600; }
+  svg.chart { width: 100%; height: 190px; display: block; }
+  .grid-l { stroke: var(--line); stroke-width: 1; }
+  .ln { fill: none; stroke: var(--accent); stroke-width: 2; stroke-linejoin: round; }
+  .ar { fill: var(--accent); opacity: .1; }
+  .ax { fill: var(--muted); font: 11px var(--mono); }
+
+  .appt { display: flex; gap: 12px; padding: 10px 0; border-top: 1px solid var(--line); align-items: center; }
+  .appt:first-of-type { border-top: 0; }
+  .t { font: 12px var(--mono); color: var(--muted); width: 48px; }
+  .av { width: 28px; height: 28px; border-radius: 50%; background: var(--sunken); display: grid; place-items: center; font-weight: 600; font-size: 12px; border: 1px solid var(--line); }
+  .appt b { font-weight: 500; display: block; line-height: 1.2; }
+  .appt small { color: var(--muted); }
+
+  table { width: 100%; border-collapse: collapse; }
+  th { text-align: left; font-weight: 500; color: var(--muted); font-size: 12px; padding: 8px 18px; background: var(--sunken); border-block: 1px solid var(--line); }
+  td { padding: 11px 18px; border-bottom: 1px solid var(--line); }
+  tr:last-child td { border-bottom: 0; }
+  tbody tr:hover { background: var(--sunken); }
+  .num { font-family: var(--mono); font-variant-numeric: tabular-nums; text-align: right; }
+  th.num { text-align: right; }
+  .chip { display: inline-flex; align-items: center; gap: 6px; padding: 2px 9px; border-radius: 99px; font-size: 12px; font-weight: 500; }
+  .chip::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
+  .paid { background: var(--accent-soft); color: var(--accent); }
+  .pend { background: var(--warn-soft); color: var(--warn); }
+  .ship { background: var(--info-soft); color: var(--info); }
+  .refd { background: var(--bad-soft); color: var(--bad); }
+
+  a:focus-visible, button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+  @media (max-width: 960px) {
+    .app { grid-template-columns: 1fr; }
+    aside { display: none; }
+    .kpis { grid-template-columns: repeat(2, 1fr); }
+    .cols { grid-template-columns: 1fr; }
+    main { padding: 18px 16px 40px; }
+    .hide-s { display: none; }
+  }
+</style>
+</head>
+<body>
+<div class="app">
+  <aside>
+    <div class="brand"><span class="mark">S</span>Stora</div>
+    <div class="tenant"><div>Luna Studio<small>luna-studio</small></div><span class="sub">⌄</span></div>
+    <a class="item on" href="#"><svg viewBox="0 0 24 24"><path d="M3 12l9-8 9 8M5 10v10h14V10"/></svg>Overview</a>
+    <a class="item" href="#"><svg viewBox="0 0 24 24"><path d="M6 6h15l-2 9H8L6 3H3M9 20h.01M18 20h.01"/></svg>Orders</a>
+    <a class="item" href="#"><svg viewBox="0 0 24 24"><path d="M21 8l-9-5-9 5v8l9 5 9-5zM3 8l9 5 9-5M12 13v8"/></svg>Products</a>
+    <a class="item" href="#"><svg viewBox="0 0 24 24"><path d="M4 5h16v15H4zM4 10h16M9 3v4M15 3v4"/></svg>Appointments</a>
+    <a class="item" href="#"><svg viewBox="0 0 24 24"><path d="M16 20v-2a4 4 0 00-4-4H7a4 4 0 00-4 4v2M9.5 10a3.5 3.5 0 100-7 3.5 3.5 0 000 7zM21 20v-2a4 4 0 00-3-3.9M16 3.1a3.5 3.5 0 010 6.8"/></svg>Staff</a>
+    <div class="label">Store</div>
+    <a class="item" href="#"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19 12a7 7 0 00-.1-1.2l2-1.5-2-3.4-2.3 1a7 7 0 00-2-1.2L14 3h-4l-.6 2.7a7 7 0 00-2 1.2l-2.3-1-2 3.4 2 1.5a7 7 0 000 2.4l-2 1.5 2 3.4 2.3-1a7 7 0 002 1.2L10 21h4l.6-2.7a7 7 0 002-1.2l2.3 1 2-3.4-2-1.5c.1-.4.1-.8.1-1.2z"/></svg>Settings</a>
+    <div class="plan"><b>Pro plan</b><div class="bar"><i></i></div><span class="sub">32 of 50 products</span></div>
+  </aside>
+
+  <main>
+    <div class="top">
+      <div><h1>Good morning, Ana</h1><p class="sub">Here's how Luna Studio is doing this week.</p></div>
+      <div style="display:flex;gap:8px"><button class="btn">Export</button><button class="btn p">+ New product</button></div>
+    </div>
+
+    <section class="kpis">
+      <div class="card kpi"><div class="k">Revenue</div><div class="v">$12,480</div><div class="delta up">▲ 12.4% vs last week</div></div>
+      <div class="card kpi"><div class="k">Orders</div><div class="v">184</div><div class="delta up">▲ 8.1%</div></div>
+      <div class="card kpi"><div class="k">Appointments</div><div class="v">47</div><div class="delta down">▼ 3.2%</div></div>
+      <div class="card kpi"><div class="k">Avg. order</div><div class="v">$67.83</div><div class="delta up">▲ 4.0%</div></div>
+    </section>
+
+    <section class="cols">
+      <div class="card pad">
+        <div class="ch"><h2>Sales</h2><span class="sub">Last 7 days</span></div>
+        <svg class="chart" viewBox="0 0 600 190" preserveAspectRatio="none" role="img" aria-label="Sales line chart, trending upward">
+          <line class="grid-l" x1="0" x2="600" y1="30" y2="30"/><line class="grid-l" x1="0" x2="600" y1="85" y2="85"/><line class="grid-l" x1="0" x2="600" y1="140" y2="140"/>
+          <path class="ar" d="M0 150 L100 125 L200 135 L300 95 L400 105 L500 55 L600 40 L600 170 L0 170Z"/>
+          <path class="ln" d="M0 150 L100 125 L200 135 L300 95 L400 105 L500 55 L600 40" vector-effect="non-scaling-stroke"/>
+          <text class="ax" x="0" y="186">Mon</text><text class="ax" x="96" y="186">Tue</text><text class="ax" x="196" y="186">Wed</text><text class="ax" x="296" y="186">Thu</text><text class="ax" x="396" y="186">Fri</text><text class="ax" x="496" y="186">Sat</text><text class="ax" x="568" y="186">Sun</text>
+        </svg>
+      </div>
+      <div class="card pad">
+        <div class="ch"><h2>Today's appointments</h2><a class="sub" href="#">View all</a></div>
+        <div class="appt"><span class="t">09:30</span><span class="av">MR</span><div><b>Maria Rojas</b><small>Haircut · with Sofia</small></div></div>
+        <div class="appt"><span class="t">11:00</span><span class="av">DK</span><div><b>Daniel Kim</b><small>Consultation · with Ana</small></div></div>
+        <div class="appt"><span class="t">14:15</span><span class="av">LP</span><div><b>Laura Pérez</b><small>Color · with Sofia</small></div></div>
+        <div class="appt"><span class="t">16:45</span><span class="av">JT</span><div><b>James Taylor</b><small>Trim · with Marco</small></div></div>
+      </div>
+    </section>
+
+    <section class="card">
+      <div class="ch pad" style="margin:0"><h2>Recent orders</h2><button class="btn">Filter</button></div>
+      <table>
+        <thead><tr><th>Order</th><th>Customer</th><th class="hide-s">Date</th><th>Status</th><th class="num">Total</th></tr></thead>
+        <tbody>
+          <tr><td class="mono" style="font-family:var(--mono)">#1048</td><td>Maria Rojas</td><td class="hide-s sub">Oct 25, 09:12</td><td><span class="chip paid">Paid</span></td><td class="num">$84.00</td></tr>
+          <tr><td style="font-family:var(--mono)">#1047</td><td>Chen Wei</td><td class="hide-s sub">Oct 25, 08:40</td><td><span class="chip ship">Shipped</span></td><td class="num">$126.50</td></tr>
+          <tr><td style="font-family:var(--mono)">#1046</td><td>Aisha Bello</td><td class="hide-s sub">Oct 24, 19:03</td><td><span class="chip pend">Pending</span></td><td class="num">$41.20</td></tr>
+          <tr><td style="font-family:var(--mono)">#1045</td><td>Tom Becker</td><td class="hide-s sub">Oct 24, 15:27</td><td><span class="chip refd">Refunded</span></td><td class="num">$58.00</td></tr>
+          <tr><td style="font-family:var(--mono)">#1044</td><td>Laura Pérez</td><td class="hide-s sub">Oct 24, 11:50</td><td><span class="chip paid">Paid</span></td><td class="num">$212.75</td></tr>
+        </tbody>
+      </table>
+    </section>
+  </main>
+</div>
+</body>
+</html>
